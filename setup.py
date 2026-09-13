@@ -19,19 +19,26 @@ web_app_packages = dir_path / "app" / "requirements.txt"
 bot_setup = input("Install bot dependencies? (y/n): ").lower() == 'y'
 web_app_setup = input("Install web app dependencies? (y/n): ").lower() == 'y'
 
-if not Path.exists(dir_path / ".venv"): venv.create(venv_path, system_site_packages=False, with_pip=True)
+if not Path.exists(dir_path / ".venv"):
+    venv.create(venv_path, system_site_packages=False, with_pip=True)
 
 if bot_setup:
-    subprocess.run([venv_python, "-m", "pip", "install", "-r", bot_packages])
+    subprocess.run(
+        [venv_python, "-m", "pip", "install", "--no-cache-dir", "-r", bot_packages],
+        check=True,
+    )
 if web_app_setup:
-    subprocess.run([venv_python, "-m", "pip", "install", "-r", web_app_packages])
+    subprocess.run(
+        [venv_python, "-m", "pip", "install", "--no-cache-dir", "-r", web_app_packages],
+        check=True,
+    )
 
 if not Path.exists(dir_path / "src" / "configs.py"):
     shutil.copy(dir_path / "src" / "configs.template.py", dir_path / "src" / "configs.py")
 else:
-    print(f"src/configs.py already exists, skipping creation.")
+    print("src/configs.py already exists, skipping creation.")
 
 if not Path.exists(dir_path / "scripts" / "start.sh"):
     shutil.copy(dir_path / "scripts" / "start.template.sh", dir_path / "scripts" / "start.sh")
 else:
-    print(f"scripts/start.sh already exists, skipping creation.")
+    print("scripts/start.sh already exists, skipping creation.")
